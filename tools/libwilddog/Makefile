@@ -12,7 +12,7 @@ PKG_VERSION:=0.7.4
 PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=http://0pointer.de/lennart/projects/libdaemon/
+PKG_SOURCE_URL:=https://cdn.wilddog.com/c/client/sdk/openwrt/
 #PKG_MD5SUM:=509dc27107c21bcd9fbf2f95f5669563
 #PKG_MAINTAINER:=Ted Hess <thess@kitschensync.net>
 
