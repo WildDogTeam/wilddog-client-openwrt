@@ -1,13 +1,18 @@
+.project
+.cproject
 # Object files
 *.o
 *.ko
 *.obj
 *.elf
 
+# Dependency files
+*.d
+
 # Precompiled Headers
 *.gch
 *.pch
-
+autom4te.cache/
 # Libraries
 *.lib
 *.a
@@ -27,6 +32,6 @@
 *.i*86
 *.x86_64
 *.hex
-
+Debug/*
 # Debug files
 *.dSYM/
