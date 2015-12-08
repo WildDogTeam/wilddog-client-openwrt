@@ -2784,7 +2784,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=libwilddog
- VERSION=0.7.3
+ VERSION=0.7.4
 
 
 cat >>confdefs.h <<_ACEOF
@@ -4485,7 +4485,6 @@ done
 
 
 # Checks for typedefs, structures, and compiler characteristics.
-AC_CHECK_HEADER_STDBOOL
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for inline" >&5
 $as_echo_n "checking for inline... " >&6; }
 if test "${ac_cv_c_inline+set}" = set; then :
