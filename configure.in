@@ -1,0 +1,107 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ([2.65])
+AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS])
+AC_CONFIG_SRCDIR([src/wilddog_api.c])
+AC_CONFIG_HEADERS([config.h])
+
+AM_INIT_AUTOMAKE(libwilddog, 0.7.3)
+
+# Checks for programs.
+AC_PROG_CC
+
+#AC_USE_SYSTEM_EXTENSIONS
+
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+#AC_PROG_LIBTOOL
+
+AC_ARG_WITH(endian,
+	    [  --with-endian=ARG       the endian, ARG=big|little, default is little],
+		if test "x$withval" = xlittle;then
+			AC_DEFINE_UNQUOTED([WILDDOG_LITTLE_ENDIAN],[1], [des])
+		else
+			AC_DEFINE_UNQUOTED([WILDDOG_LITTLE_ENDIAN],[0], [des])
+		fi
+)
+AC_SUBST(WILDDOG_LITTLE_ENDIAN)
+
+AC_ARG_WITH(bits,
+	    [  --with-bits=ARG         the machine bits, ARG=8|16|32|64, default is 32],
+		AC_DEFINE_UNQUOTED([WILDDOG_MACHINE_BITS],[$withval], [des])
+)
+AC_SUBST(WILDDOG_MACHINE_BITS)
+
+AC_ARG_WITH(maxsize,
+	    [  --with-maxsize=ARG      the proto maxsize, ARG=0~1300, default is 1280],
+		AC_DEFINE_UNQUOTED([WILDDOG_PROTO_MAXSIZE],[$withval], [des])
+)
+AC_SUBST(WILDDOG_PROTO_MAXSIZE)
+
+AC_ARG_WITH(queuenum,
+	    [  --with-queuenum=ARG     the queue num, default is 32],
+		AC_DEFINE_UNQUOTED([WILDDOG_REQ_QUEUE_NUM],[$withval], [des])
+)
+AC_SUBST(WILDDOG_REQ_QUEUE_NUM)
+
+AC_ARG_WITH(retransmitetime,
+	    [  --with-retranstime=ARG  the retransmite time in ms, default is 10000],
+		AC_DEFINE_UNQUOTED([WILDDOG_RETRANSMITE_TIME],[$withval], [des])
+)
+AC_SUBST(WILDDOG_RETRANSMITE_TIME)
+
+AC_ARG_WITH(receivetimeout,
+	    [  --with-recvtimeout=ARG  the receive timeout in ms, default is 100],
+		AC_DEFINE_UNQUOTED([WILDDOG_RECEIVE_TIMEOUT],[$withval], [des])
+)
+AC_SUBST(WILDDOG_RECEIVE_TIMEOUT)
+
+AC_ARG_WITH(sectype,
+	    [  --with-sectype=ARG      the sec type, ARG=nosec|dtls|tinydtls, default is tinydtls],
+		#AC_DEFINE_UNQUOTED([APP_SEC_TYPE],[$withval], [des])
+		APP_SEC_TYPE=$withval
+)
+AC_SUBST(APP_SEC_TYPE)
+
+#AM_CONDITIONAL(WITH_TINYDTLS, [test x$APP_SEC_TYPE = xtinydtls])
+AM_CONDITIONAL(WITHOUT_DTLS, [test x$APP_SEC_TYPE = xnosec])
+AM_CONDITIONAL(WITH_DTLS, [test x$APP_SEC_TYPE = xdtls])
+
+
+#AC_ARG_WITH(wilddogport,
+#	    [ --with-wilddogport=                Specify the wilddog port],
+#		AC_DEFINE_UNQUOTED([WILDDOG_PORT],[$withval], [des])
+#)
+#AC_SUBST(WILDDOG_PORT)
+
+#AC_DEFINE([WILDDOG_PORT], [5684], [Description])
+
+# Checks for header files.
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h inttypes.h malloc.h netdb.h netinet/in.h stddef.h stdint.h stdlib.h string.h sys/socket.h sys/time.h unistd.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_CHECK_HEADER_STDBOOL
+AC_C_INLINE
+AC_TYPE_INT16_T
+AC_TYPE_INT32_T
+AC_TYPE_INT64_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
+AC_TYPE_UINT16_T
+AC_TYPE_UINT32_T
+AC_TYPE_UINT64_T
+AC_TYPE_UINT8_T
+AC_CHECK_TYPES([ptrdiff_t])
+
+# Checks for library functions.
+AC_FUNC_FORK
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_CHECK_FUNCS([alarm gethostbyname gettimeofday memmove memset select socket strcasecmp strchr strstr])
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
+

@@ -1,0 +1,217 @@
+noinst_LIBRARIES=libwilddog.a
+INCLUDES=-I $(top_srcdir)/../lib/include -I $(top_srcdir)/../lib/src -I $(top_srcdir)/../lib/src/networking/coap  -I ./include -I ./src -I ./src/networking/coap 
+AM_CFLAGS=
+libwilddog_a_SOURCES= \
+	./platform/linux/wilddog_posix.c \
+	./src/performtest.c \
+	./src/ramtest.c \
+	./src/test_lib.h \
+	./src/utlist.h \
+	./src/wilddog_api.c \
+	./src/wilddog_common.c \
+	./src/wilddog_common.h \
+	./src/wilddog_conn.c \
+	./src/wilddog_conn.h \
+	./src/wilddog_ct.c \
+	./src/wilddog_ct.h \
+	./src/wilddog_debug.c \
+	./src/wilddog_endian.h \
+	./src/wilddog_event.c \
+	./src/wilddog_event.h \
+	./src/wilddog_node.c \
+	./src/wilddog_payload.h \
+	./src/wilddog_sec.h \
+	./src/wilddog_sec_host.c \
+	./src/wilddog_sec_host.h \
+	./src/wilddog_store.c \
+	./src/wilddog_store.h \
+	./src/wilddog_url_parser.c \
+	./src/wilddog_url_parser.h \
+	./src/networking/coap/bits.h \
+	./src/networking/coap/option.c \
+	./src/networking/coap/option.h \
+	./src/networking/coap/pdu.c \
+	./src/networking/coap/pdu.h \
+	./src/networking/coap/wilddog_conn_coap.c \
+	./src/networking/coap/wilddog_conn_coap.h \
+	./src/serialize/cbor/wilddog_cbor.c \
+	./src/serialize/cbor/wilddog_cbor.h \
+	./include/wilddog.h \
+	./include/wilddog_api.h \
+	./include/wilddog_config.h \
+	./include/wilddog_debug.h \
+	./include/wilddog_port.h  
+
+if WITHOUT_DTLS
+libwilddog_a_SOURCES += \
+	./src/secure/nosec/wilddog_nosec.c 
+
+AM_CFLAGS+=-DWILDDOG_PORT=5683
+else
+if WITH_DTLS
+INCLUDES+=-I $(top_srcdir)/../lib/src/secure/dtls/inc   -I ./src/secure/dtls/inc
+libwilddog_a_SOURCES += \
+	./src/secure/dtls/lib/aes.c \
+	./src/secure/dtls/lib/aesni.c \
+	./src/secure/dtls/lib/arc4.c \
+	./src/secure/dtls/lib/asn1parse.c \
+	./src/secure/dtls/lib/asn1write.c \
+	./src/secure/dtls/lib/base64.c \
+	./src/secure/dtls/lib/bignum.c \
+	./src/secure/dtls/lib/blowfish.c \
+	./src/secure/dtls/lib/camellia.c \
+	./src/secure/dtls/lib/ccm.c \
+	./src/secure/dtls/lib/certs.c \
+	./src/secure/dtls/lib/cipher.c \
+	./src/secure/dtls/lib/cipher_wrap.c \
+	./src/secure/dtls/lib/ctr_drbg.c \
+	./src/secure/dtls/lib/debug.c \
+	./src/secure/dtls/lib/des.c \
+	./src/secure/dtls/lib/dhm.c \
+	./src/secure/dtls/lib/ecdh.c \
+	./src/secure/dtls/lib/ecdsa.c \
+	./src/secure/dtls/lib/ecp.c \
+	./src/secure/dtls/lib/ecp_curves.c \
+	./src/secure/dtls/lib/entropy.c \
+	./src/secure/dtls/lib/entropy_poll.c \
+	./src/secure/dtls/lib/gcm.c \
+	./src/secure/dtls/lib/hmac_drbg.c \
+	./src/secure/dtls/lib/md5.c \
+	./src/secure/dtls/lib/md.c \
+	./src/secure/dtls/lib/md_wrap.c \
+	./src/secure/dtls/lib/net.c \
+	./src/secure/dtls/lib/oid.c \
+	./src/secure/dtls/lib/padlock.c \
+	./src/secure/dtls/lib/pem.c \
+	./src/secure/dtls/lib/pk.c \
+	./src/secure/dtls/lib/pkcs12.c \
+	./src/secure/dtls/lib/pkcs5.c \
+	./src/secure/dtls/lib/pkparse.c \
+	./src/secure/dtls/lib/pk_wrap.c \
+	./src/secure/dtls/lib/ripemd160.c \
+	./src/secure/dtls/lib/rsa.c \
+	./src/secure/dtls/lib/sha1.c \
+	./src/secure/dtls/lib/sha256.c \
+	./src/secure/dtls/lib/ssl_ciphersuites.c \
+	./src/secure/dtls/lib/ssl_cli.c \
+	./src/secure/dtls/lib/ssl_srv.c \
+	./src/secure/dtls/lib/ssl_tls.c \
+	./src/secure/dtls/lib/timing.c \
+	./src/secure/dtls/lib/wilddog_dtls.c \
+	./src/secure/dtls/lib/x509.c \
+	./src/secure/dtls/lib/x509_crt.c \
+	./src/secure/dtls/inc/mbedtls/aes.h \
+	./src/secure/dtls/inc/mbedtls/aesni.h \
+	./src/secure/dtls/inc/mbedtls/arc4.h \
+	./src/secure/dtls/inc/mbedtls/asn1.h \
+	./src/secure/dtls/inc/mbedtls/asn1write.h \
+	./src/secure/dtls/inc/mbedtls/base64.h \
+	./src/secure/dtls/inc/mbedtls/bignum.h \
+	./src/secure/dtls/inc/mbedtls/blowfish.h \
+	./src/secure/dtls/inc/mbedtls/bn_mul.h \
+	./src/secure/dtls/inc/mbedtls/camellia.h \
+	./src/secure/dtls/inc/mbedtls/ccm.h \
+	./src/secure/dtls/inc/mbedtls/certs.h \
+	./src/secure/dtls/inc/mbedtls/check_config.h \
+	./src/secure/dtls/inc/mbedtls/cipher.h \
+	./src/secure/dtls/inc/mbedtls/cipher_internal.h \
+	./src/secure/dtls/inc/mbedtls/compat-1.3.h \
+	./src/secure/dtls/inc/mbedtls/config.h \
+	./src/secure/dtls/inc/mbedtls/ctr_drbg.h \
+	./src/secure/dtls/inc/mbedtls/debug.h \
+	./src/secure/dtls/inc/mbedtls/des.h \
+	./src/secure/dtls/inc/mbedtls/dhm.h \
+	./src/secure/dtls/inc/mbedtls/ecdh.h \
+	./src/secure/dtls/inc/mbedtls/ecdsa.h \
+	./src/secure/dtls/inc/mbedtls/ecp.h \
+	./src/secure/dtls/inc/mbedtls/entropy.h \
+	./src/secure/dtls/inc/mbedtls/entropy_poll.h \
+	./src/secure/dtls/inc/mbedtls/error.h \
+	./src/secure/dtls/inc/mbedtls/gcm.h \
+	./src/secure/dtls/inc/mbedtls/havege.h \
+	./src/secure/dtls/inc/mbedtls/hmac_drbg.h \
+	./src/secure/dtls/inc/mbedtls/md2.h \
+	./src/secure/dtls/inc/mbedtls/md4.h \
+	./src/secure/dtls/inc/mbedtls/md5.h \
+	./src/secure/dtls/inc/mbedtls/md.h \
+	./src/secure/dtls/inc/mbedtls/md_internal.h \
+	./src/secure/dtls/inc/mbedtls/memory_buffer_alloc.h \
+	./src/secure/dtls/inc/mbedtls/net.h \
+	./src/secure/dtls/inc/mbedtls/oid.h \
+	./src/secure/dtls/inc/mbedtls/padlock.h \
+	./src/secure/dtls/inc/mbedtls/pem.h \
+	./src/secure/dtls/inc/mbedtls/pkcs11.h \
+	./src/secure/dtls/inc/mbedtls/pkcs12.h \
+	./src/secure/dtls/inc/mbedtls/pkcs5.h \
+	./src/secure/dtls/inc/mbedtls/pk.h \
+	./src/secure/dtls/inc/mbedtls/pk_internal.h \
+	./src/secure/dtls/inc/mbedtls/platform.h \
+	./src/secure/dtls/inc/mbedtls/ripemd160.h \
+	./src/secure/dtls/inc/mbedtls/rsa.h \
+	./src/secure/dtls/inc/mbedtls/sha1.h \
+	./src/secure/dtls/inc/mbedtls/sha256.h \
+	./src/secure/dtls/inc/mbedtls/sha512.h \
+	./src/secure/dtls/inc/mbedtls/ssl_cache.h \
+	./src/secure/dtls/inc/mbedtls/ssl_ciphersuites.h \
+	./src/secure/dtls/inc/mbedtls/ssl_cookie.h \
+	./src/secure/dtls/inc/mbedtls/ssl_internal.h \
+	./src/secure/dtls/inc/mbedtls/ssl.h \
+	./src/secure/dtls/inc/mbedtls/ssl_ticket.h \
+	./src/secure/dtls/inc/mbedtls/threading.h \
+	./src/secure/dtls/inc/mbedtls/timing.h \
+	./src/secure/dtls/inc/mbedtls/version.h \
+	./src/secure/dtls/inc/mbedtls/x509_crl.h \
+	./src/secure/dtls/inc/mbedtls/x509_crt.h \
+	./src/secure/dtls/inc/mbedtls/x509_csr.h \
+	./src/secure/dtls/inc/mbedtls/x509.h \
+	./src/secure/dtls/inc/mbedtls/xtea.h
+AM_CFLAGS+=-DWILDDOG_PORT=5684
+else
+libwilddog_a_SOURCES+= \
+	./src/secure/tinydtls/alert.h \
+	./src/secure/tinydtls/tiny_ccm.c \
+	./src/secure/tinydtls/ccm.h \
+	./src/secure/tinydtls/crypto.c \
+	./src/secure/tinydtls/crypto.h \
+	./src/secure/tinydtls/tiny_debug.c \
+	./src/secure/tinydtls/debug.h \
+	./src/secure/tinydtls/dtls.c \
+	./src/secure/tinydtls/dtls.h \
+	./src/secure/tinydtls/dtls_config.h \
+	./src/secure/tinydtls/dtls_time.c \
+	./src/secure/tinydtls/dtls_time.h \
+	./src/secure/tinydtls/ecc.c \
+	./src/secure/tinydtls/ecc.h \
+	./src/secure/tinydtls/global.h \
+	./src/secure/tinydtls/hmac.c \
+	./src/secure/tinydtls/hmac.h \
+	./src/secure/tinydtls/netq.c \
+	./src/secure/tinydtls/netq.h \
+	./src/secure/tinydtls/numeric.h \
+	./src/secure/tinydtls/peer.c \
+	./src/secure/tinydtls/peer.h \
+	./src/secure/tinydtls/prng.h \
+	./src/secure/tinydtls/rijndael.c \
+	./src/secure/tinydtls/rijndael.h \
+	./src/secure/tinydtls/session.c \
+	./src/secure/tinydtls/session.h \
+	./src/secure/tinydtls/sha2.c \
+	./src/secure/tinydtls/sha2.h \
+	./src/secure/tinydtls/state.h \
+	./src/secure/tinydtls/t_list.h \
+	./src/secure/tinydtls/tiny_platform.h \
+	./src/secure/tinydtls/tinydtls.h \
+	./src/secure/tinydtls/uthash.h \
+	./src/secure/tinydtls/utlist.h \
+	./src/secure/tinydtls/wilddog_conn_sec_dtls.c \
+	./src/serialize/cbor/wilddog_cbor.c \
+	./src/serialize/cbor/wilddog_cbor.h \
+	./include/wilddog.h \
+	./include/wilddog_api.h \
+	./include/wilddog_config.h \
+	./include/wilddog_debug.h \
+	./include/wilddog_port.h
+AM_CFLAGS+=-DWILDDOG_PORT=5684 -fno-strict-aliasing
+endif
+endif
+
