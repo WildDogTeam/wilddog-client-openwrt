@@ -211,7 +211,7 @@ libwilddog_a_SOURCES+= \
 	./include/wilddog_config.h \
 	./include/wilddog_debug.h \
 	./include/wilddog_port.h
-AM_CFLAGS+=-DWILDDOG_PORT=5684 -fno-strict-aliasing
+AM_CFLAGS+=-DWILDDOG_PORT=5684 -fno-strict-aliasing -pthread
 endif
 endif
 

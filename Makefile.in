@@ -199,7 +199,7 @@ POST_UNINSTALL = :
 @WITHOUT_DTLS_FALSE@@WITH_DTLS_FALSE@	./include/wilddog_debug.h \
 @WITHOUT_DTLS_FALSE@@WITH_DTLS_FALSE@	./include/wilddog_port.h
 
-@WITHOUT_DTLS_FALSE@@WITH_DTLS_FALSE@am__append_7 = -DWILDDOG_PORT=5684 -fno-strict-aliasing
+@WITHOUT_DTLS_FALSE@@WITH_DTLS_FALSE@am__append_7 = -DWILDDOG_PORT=5684 -fno-strict-aliasing -pthread
 subdir = .
 DIST_COMMON = README $(am__configure_deps) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/config.h.in \
