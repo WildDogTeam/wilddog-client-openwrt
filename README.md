@@ -34,7 +34,8 @@
 
 #####4.范例使用
 
-1.将`wilddog-client-openwrt\examples\demo`文件夹（以及其中的`Makefile`文件）拷贝到`openwrt`项目中的`package/libs/`目录下.
+
+1. 将`wilddog-client-openwrt\examples\demo`文件夹（以及其中的`Makefile`文件）拷贝到`openwrt`项目中的`package/libs/`目录下.
 
 	 cp -rf wilddog-client-openwrt\examples\demo  <your openwrt path>package/
 
@@ -48,13 +49,13 @@
 	ls ls bin/ar71xx/packages/base/demo*
 	bin/ar71xx/packages/base/demo_1_ar71xx.ipk 
 
-4.将这个`demo_x_xxxx.ipk`上传到`openwrt`中，并`opkg`安装;
+4. 将这个`demo_x_xxxx.ipk`上传到`openwrt`中，并`opkg`安装;
 
 	opkg demo_x_xxxx.ipk
 
-5.使用demo获取数据:
+5. 使用demo获取数据:
 
 	demo getValue -l coap://YourAppID.wilddogio.com/YourPath 
 
-6.该demo展示了如何获取、更新、删除野狗云端数据，具体使用请阅读源码.
+6. 该demo展示了如何获取、更新、删除野狗云端数据，具体使用请阅读源码.
 	 		
