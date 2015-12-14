@@ -1,6 +1,8 @@
 
 ####wilddog-client-openwrt说明：
-`wilddog-client-openwrt`SDK提供了一整套访问和操作野狗云端数据的`API`，用户只需要在`openwrt`上安装`SDK`，即可在应用中调用野狗提供的[API](https://z.wilddog.com/device/quickstart)访问野狗云端的数据。
+
+`wilddog-client-openwrt`SDK提供了一整套访问和操作野狗云端数据的`API`，用户只需要在`openwrt`上安装`SDK`，即可在应用中调用野狗提供的[API](https://z.wilddog.com/device/quickstart)访问野狗云端的数据.
+
 #####1. 下载
 
 从git下载到文件夹
@@ -9,7 +11,7 @@
 
 #####2. 部署到openwrt项目中
 
-将`wilddog-client-openwrt\tools\libwilddog`文件夹拷贝到`openwrt`项目中的`package/libs/`目录下。
+将`wilddog-client-openwrt\tools\libwilddog`文件夹拷贝到`openwrt`项目中的`package/libs/`目录下.
 
 	cp -rf wilddog-client-openwrt\tools\libwilddog  <your openwrt path>package/libs/
 
@@ -17,8 +19,9 @@
 
 1. 在openwrt项目的根目录下运行`sudo make menuconfig`；
 
-2. 在`Libraries`目录下，选中`libwilddog`，并设置为module（如果设置为built-in，则可忽略3、4两步）；
-	{M} libwilddog........................................ CoAP UDP + DTLS + CBOR
+2. 在`Libraries`目录下，选中`libwilddog`，并设置为module（如果设置为built-in，则可忽略3、4两步,但需要将整个openwrt固件刷到设备中);
+
+		{M} libwilddog........................................ CoAP UDP + DTLS + CBOR
 
 3. 运行make编译openwrt；
 
@@ -31,13 +34,13 @@
 
 #####4.范例使用
 
-1.将`wilddog-client-openwrt\examples\demo`文件夹（以及其中的`Makefile`文件）拷贝到`openwrt`项目中的`package/libs/`目录下。
+1.将`wilddog-client-openwrt\examples\demo`文件夹（以及其中的`Makefile`文件）拷贝到`openwrt`项目中的`package/libs/`目录下.
 
 	 cp -rf wilddog-client-openwrt\examples\demo  <your openwrt path>package/
 
-2. 配置，生成`demo.ipk`，执行`sudo make menuconfig`，在`Utilities`选中`demo`，并设置为module；
-
-	<M> demo............................ demo -- demo show how to use libwilddog 
+2. 配置，生成`demo.ipk`，执行`sudo make menuconfig`，在`Utilities`选中`demo`，并设置为module;
+	
+		<M> demo............................ demo -- demo show how to use libwilddog 
 
 3. 编译：
 
@@ -53,5 +56,5 @@
 
 	demo getValue -l coap://YourAppID.wilddogio.com/YourPath 
 
-6.该demo展示了如何获取、更新、删除野狗云端数据，具体使用请阅读源码。
+6.该demo展示了如何获取、更新、删除野狗云端数据，具体使用请阅读源码.
 	 		
