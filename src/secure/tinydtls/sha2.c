@@ -122,6 +122,7 @@
 #define SHA2_BIG_ENDIAN 4321
 #endif
 */
+#undef BYTE_ORDER
 #ifndef BYTE_ORDER
 #  if defined(SHA2_BIG_ENDIAN) || (defined(AC_APPLE_UNIVERSAL_BUILD) && defined(__BIG_ENDIAN__))
 #    define BYTE_ORDER SHA2_BIG_ENDIAN
@@ -496,8 +497,6 @@ void SHA256_Transform(TINY_SHA256_CTX* context, const sha2_word32* data) {
 	sha2_word32	a, b, c, d, e, f, g, h, s0, s1;
 	sha2_word32	T1, T2, *W256;
 	int		j;
-	char		m;
-	sha2_word32	tmp=0;
 
 	W256 = (sha2_word32*)context->buffer;
 
@@ -515,11 +514,7 @@ void SHA256_Transform(TINY_SHA256_CTX* context, const sha2_word32* data) {
 	do {
 #if BYTE_ORDER == SHA2_LITTLE_ENDIAN
 		/* Copy data while converting to host byte order */
-		sprintf(&m, "%d", j);
-		tmp = *data;
-		tmp = (tmp >> 16) | (tmp << 16);
-		W256[j] = ((tmp & 0xff00ff00UL) >> 8) | ((tmp & 0x00ff00ffUL) << 8);
-		data++;
+		REVERSE32(*data++,W256[j]);
 		/* Apply the SHA-256 compression function to update a..h */
 		T1 = h + Sigma1_256(e) + Ch(e, f, g) + K256[j] + W256[j];
 #else /* BYTE_ORDER == SHA2_LITTLE_ENDIAN */
@@ -580,7 +575,9 @@ void SHA256_Transform(TINY_SHA256_CTX* context, const sha2_word32* data) {
 
 void SHA256_Update(TINY_SHA256_CTX* context, const sha2_byte *data, size_t len) {
 	unsigned int	freespace, usedspace;
-
+	sha2_byte *tmpData = NULL;
+	sha2_byte *tmpPtr = NULL;
+	
 	if (len == 0) {
 		/* Calling with no data is valid - we do nothing */
 		return;
@@ -610,19 +607,37 @@ void SHA256_Update(TINY_SHA256_CTX* context, const sha2_byte *data, size_t len) 
 			return;
 		}
 	}
+    /*fix bug, data may be not in 4 bytes order, can cause bus error*/
+	if((len >= SHA256_BLOCK_LENGTH) && ((size_t)data & (sizeof(sha2_word32) - 1)))
+	{
+		tmpData = (sha2_byte*)wmalloc(len);
+		if(tmpData)
+		{
+			MEMCPY_BCOPY(tmpData, data, len);
+			tmpPtr = tmpData;
+		}
+	}
+	else
+		tmpPtr = (sha2_byte*)data;
 	while (len >= SHA256_BLOCK_LENGTH) {
 		/* Process as many complete blocks as we can */
-		SHA256_Transform(context, (sha2_word32*)data);
+		SHA256_Transform(context, (sha2_word32*)tmpPtr);
 		context->bitcount += SHA256_BLOCK_LENGTH << 3;
 		len -= SHA256_BLOCK_LENGTH;
-		data += SHA256_BLOCK_LENGTH;
+		tmpPtr += SHA256_BLOCK_LENGTH;
+		if(tmpData)
+			data += SHA256_BLOCK_LENGTH;
 	}
 	if (len > 0) {
 		/* There's left-overs, so save 'em */
-		MEMCPY_BCOPY(context->buffer, data, len);
+		MEMCPY_BCOPY(context->buffer, tmpPtr, len);
 		context->bitcount += len << 3;
 	}
 	/* Clean up: */
+	/*fix bug, data may be not in 4 bytes order, can cause bus error*/
+	if(tmpData)
+		wfree(tmpData);
+	tmpData = tmpPtr = NULL;
 	usedspace = freespace = 0;
 }
 
