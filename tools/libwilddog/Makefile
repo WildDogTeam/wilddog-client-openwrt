@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=libwilddog
-PKG_VERSION:=0.7.4
+PKG_VERSION:=0.7.5
 PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
@@ -25,6 +25,7 @@ define Package/libwilddog
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=CoAP UDP + DTLS + CBOR
+  DEPENDS:=+libpthread
 endef
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
