@@ -11,13 +11,13 @@
 
 #####2. 部署到openwrt项目中
 
-将`wilddog-client-openwrt\tools\libwilddog`文件夹拷贝到`openwrt`项目中的`package/libs/`目录下.
+将`wilddog-client-openwrt/tools/libwilddog`文件夹拷贝到`openwrt`项目中的`package/libs/`目录下.
 
-	cp -rf wilddog-client-openwrt\tools\libwilddog  <your openwrt path>package/libs/
+	cp -rf wilddog-client-openwrt/tools/libwilddog  <your openwrt path>/package/libs/
 
 #####3. 在openwrt项目下制作ipk并安装
 
-1. 在openwrt项目的根目录下运行`sudo make menuconfig`；
+1. 在openwrt项目的根目录下运行`make menuconfig`；
 
 2. 在`Libraries`目录下，选中`libwilddog`，并设置为module（如果设置为built-in，则可忽略3、4两步,但需要将整个openwrt固件刷到设备中);
 
@@ -25,7 +25,7 @@
 
 3. 运行make编译openwrt；
 
-4. 编译成功后，在bin目录下能找到`libwilddog_x.x.x-x_xxxx.ipk`；
+4. 编译成功后，在`bin`目录下能找到`libwilddog_x.x.x-x_xxxx.ipk`；
 
 5. 将这个ipk上传到openwrt中，并opkg安装
 
@@ -35,9 +35,9 @@
 #####4.范例使用
 
 
-1. 将`wilddog-client-openwrt\examples\demo`文件夹（以及其中的`Makefile`文件）拷贝到`openwrt`项目中的`package/libs/`目录下.
+1. 将`wilddog-client-openwrt/examples/demo`文件夹（以及其中的`Makefile`文件）拷贝到`openwrt`项目中的`package/utils/`目录下.
 
-	 cp -rf wilddog-client-openwrt\examples\demo  <your openwrt path>package/
+	 cp -rf wilddog-client-openwrt/examples/demo  <your openwrt path>/package/utils/
 
 2. 配置，生成`demo.ipk`，执行`sudo make menuconfig`，在`Utilities`选中`demo`，并设置为module;
 	
@@ -45,13 +45,11 @@
 
 3. 编译：
 
-	sudo make V=s
-	ls ls bin/ar71xx/packages/base/demo*
-	bin/ar71xx/packages/base/demo_1_ar71xx.ipk 
+	make V=s
 
-4. 将这个`demo_x_xxxx.ipk`上传到`openwrt`中，并`opkg`安装;
+4. 将编译出来的`bin`目录下的`demo_x_xxxx.ipk`上传到`openwrt`中，并`opkg`安装;
 
-	opkg demo_x_xxxx.ipk
+	opkg install demo_x_xxxx.ipk
 
 5. 使用demo获取数据:
 
