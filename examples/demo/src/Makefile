@@ -1,7 +1,7 @@
 #makefile
 #CC=gcc#mips-openwrt-linux-gcc
 #FLAGS = -Wall
-LDFLAGS := -lwilddog
+LDFLAGS := -lwilddog -lpthread
 
 objects = demo.o
 demo : $(objects)
