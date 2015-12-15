@@ -55,7 +55,7 @@
 
 	demo getValue -l coap://yourappid.wilddogio.com/YourPath 
 
-`yourappid`为在野狗上申请的应用名称.
+	`yourappid`为在野狗上申请的应用名称.
 
 6. 该demo展示了如何获取、更新、删除野狗云端数据，具体使用请阅读源码.
 	 		
