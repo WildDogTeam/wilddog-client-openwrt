@@ -39,7 +39,7 @@
 
 	 cp -rf wilddog-client-openwrt/examples/demo  <your openwrt path>/package/utils/
 
-2. 配置，生成`demo.ipk`，执行`sudo make menuconfig`，在`Utilities`选中`demo`，并设置为module;
+2. 配置，生成`demo.ipk`，执行`make menuconfig`，在`Utilities`选中`demo`，并设置为module;
 	
 		<M> demo............................ demo -- demo show how to use libwilddog 
 
