@@ -1,5 +1,5 @@
 #makefile
-
+#wilddog sdk used pthread in tinydtls, so if using tinydtls, we must add pthread lib
 LDFLAGS := -lwilddog -lpthread
 
 objects = demo.o
