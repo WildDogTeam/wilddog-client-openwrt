@@ -32,7 +32,7 @@
 		opkg install libwilddog_x.x.x-x_xxxx.ipk
 
 
-#####4.范例使用
+#####4. 范例使用
 
 
 1. 将`wilddog-client-openwrt/examples/demo`文件夹（以及其中的`Makefile`文件）拷贝到`openwrt`项目中的`package/utils/`目录下.
