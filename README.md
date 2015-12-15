@@ -37,7 +37,7 @@
 
 1. 将`wilddog-client-openwrt/examples/demo`文件夹（以及其中的`Makefile`文件）拷贝到`openwrt`项目中的`package/utils/`目录下.
 
-	 cp -rf wilddog-client-openwrt/examples/demo  <your openwrt path>/package/utils/
+	 	cp -rf wilddog-client-openwrt/examples/demo  <your openwrt path>/package/utils/
 
 2. 配置，生成`demo.ipk`，执行`make menuconfig`，在`Utilities`选中`demo`，并设置为module;
 	
@@ -45,15 +45,15 @@
 
 3. 编译：
 
-	make V=s
+		make V=s
 
 4. 将编译出来的`bin`目录下的`demo_x_xxxx.ipk`上传到`openwrt`中，并`opkg`安装;
 
-	opkg install demo_x_xxxx.ipk
+		opkg install demo_x_xxxx.ipk
 
 5. 使用demo获取数据:
 
-	demo getValue -l coap://yourappid.wilddogio.com/YourPath 
+		demo getValue -l coap://yourappid.wilddogio.com/YourPath 
 
 	`yourappid`为在野狗上申请的应用名称.
 
