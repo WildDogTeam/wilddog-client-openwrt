@@ -1,97 +1,82 @@
-#WildDog SDK说明
-WildDog C/嵌入式SDK是Wilddog云在C/嵌入式场景下的客户端，使用者调用api接口即可实现和云端的通信、消息订阅功能。如有什么意见、建议或合作意向，可访问`www.wilddog.com`。
 
-WildDog C/嵌入式的SDK 使用的是CoAP UDP + DTLS + CBOR技术。
+####wilddog-client-openwrt说明：
 
-在物联网环境下，由IETF主导的CoAP协议要比MQTT等协议要更加适用和更有针对性。只使用UDP协议可以使得ROM大小变小(无需TCP协议栈)；由于无需保持TCP状态，所以比传统TCP更加省电，更加轻量；适合在Thread和Zigbee上传输；满足在未来受限网络和受限设备的网络场景。
+`wilddog-client-openwrt` SDK提供了一整套访问和操作野狗云端数据的api，用户只需要在OpenWRT上安装，即可在应用中调用野狗提供的api访问野狗云端的数据.
 
-CoAP是唯一的国际物联网应用层标准，我们对选择何种协议并没有太多兴趣，但是我们认为CoAP更能解决问题。
+#####1. 下载
 
-**NEWS**：
+从git下载到文件夹
 
-我们在Linux平台下采用C/嵌入式SDK实现了一个远程调用shell脚本的工具，欢迎大家使用，路径：`https://github.com/WildDogTeam/liveshell`
+	git clone https://github.com/WildDogTeam/wilddog-client-openwrt.git
 
-##1. 目录结构
+#####2. 部署到OpenWRT项目中
 
-	├── docs
-	├── examples
-	├── include
-	├── platform
-	├── project
-	├── src
-	├── tests
-	└── tools
+将`wilddog-client-openwrt/tools/libwilddog`文件夹拷贝到OpenWRT项目中的`package/libs/`目录下.
 
-####docs
-SDK文档。
+	cp -rf wilddog-client-openwrt/tools/libwilddog  <your openwrt path>/package/libs/
 
-####examples
-各个平台下的demo例子。
+#####3. 在openwrt项目下制作ipk并安装
 
-####include
-目录中各个文件内容如下：
+1. 在OpenWRT项目的根目录下运行`make menuconfig`；
 
-*	wilddog.h : 基本数据结构和宏定义
-*	wilddog_api.h : api函数声明
-*	wilddog_config.h : 用户配置宏定义
-*	wilddog_port.h : 平台相关接口函数
-*	widdog_debug.h : debug相关函数声明
+2. 在`Libraries`目录下，选中`libwilddog`，并设置为module（如果设置为built-in，则可忽略3、4两步,但需要将整个openwrt固件刷到设备中);
 
-####platform
+		{M} libwilddog........................................ CoAP UDP + DTLS + CBOR
 
-该目录根据不同平台分为不同子目录，分别为linux和wiced等。
+3. 运行make，编译OpenWRT；
 
-####project
+4. 编译成功后，在`bin`目录下能找到`libwilddog_x.x.x-x_xxxx.ipk`；
 
-demo例子的工程目录。
+5. 将这个ipk上传到OpenWRT中，并使用opkg命令安装
 
-####src
-
-平台无关目录。
-
-####tests
-
-测试文件。
-
-####tools
-
-各个平台使用的一些工具。
-
-----
-##2. 快速入门
-
-编译SDK，编译后的库文件在lib目录下
-
-	$ cd wilddog-client-c
-	$ make 
-
-编译示例，编译后的可执行文件在bin目录下
-
-	$ make example
-
-向应用URL存储一个key-value结构的数据
-
-	$ ./bin/demo setValue -l <应用URL> --key a --value 1 
-获取应用URL的数据
-
-	$ ./bin/demo getValue -l <应用URL>
-执行结果：
-
-	"/":{"a":"1"}
+		opkg install libwilddog_x.x.x-x_xxxx.ipk
 
 
-----
-##3. 移植说明
+#####4. 范例使用
 
-SDK已经在WICED、ESP8266、庆科MICO、树莓派、Arduino Yun、OpenWRT中成功移植，可参考docs目录。
+1. 将`wilddog-client-openwrt/examples/demo`文件夹（以及其中的`Makefile`文件）拷贝到OpenWRT项目中的`package/utils/`目录下.
 
-----
-##4. 其他参考
+	 	cp -rf wilddog-client-openwrt/examples/demo  <your OpenWRT project path>/package/utils/
 
-SDK 文档: https://z.wilddog.com/device/quickstart
+2. 配置，生成`demo.ipk`，执行`make menuconfig`，在`Utilities`选中`demo`，并设置为`module`模式;
+	
+		<M> demo............................ demo -- demo show how to use libwilddog 
 
-Wiced 文档和sdk获取:http://www.broadcom.com/products/wiced/wifi/
+3. 编译：
 
-Espressif sdk获取: http://espressif.com/zh-hans/%E6%9C%80%E6%96%B0sdk%E5%8F%91%E5%B8%83/
+		make V=s
 
-庆科 SDK获取：http://mico.io/wiki/doku.php
+4. 将编译出来的`bin`目录下的`demo_x_xxxx.ipk`上传到OpenWRT中，并使用opkg命令安装;
+
+		opkg install demo_x_xxxx.ipk
+
+5. 使用demo获取数据:
+
+		demo getValue -l coap://<appid>.wilddogio.com/YourPath 
+
+	`<appid>`为在野狗上申请的应用名称.
+
+6. 该demo展示了如何获取、更新、删除野狗云端数据，具体使用请阅读源码.
+		
+#####5. 高级配置
+
+可以在`wilddog-client-openwrt/tools/libwilddog`目录下的Makefile中对sdk进行配置。
+
+	define Build/Configure
+ 	 $(call Build/Configure/Default,--with-endian=big)
+	endef
+
+在这里，可以在`$(call Build/Configure/Default,--with-endian=big)`中增加配置项：
+
+	--with-endian=ARG       大小端, ARG可设为big|little,  默认little
+	--with-bits=ARG         机器位数, ARG可设为8|16|32|64, 默认32
+	--with-maxsize=ARG      应用层协议长度, ARG可设为0~1300, 默认1280
+	--with-queuenum=ARG     消息队列个数, 默认32
+	--with-retranstime=ARG  重传超时时间（ms）, 默认10000ms
+	--with-recvtimeout=ARG  单次最大接收时间（ms）, 默认100ms
+	--with-sectype=ARG      加密方式, ARG可设为nosec|mbedtls|tinydtls, 默认tinydtls
+
+例如，将`$(call Build/Configure/Default,--with-endian=big)`改为`$(call Build/Configure/Default,--with-sectype=nosec --with-endian=big)`后，重新`make V=s`，生成的ipk中，加密方式为未加密。
+
+注意，Arduino Yun(ar71xx系列)是大端模式，如果在Arduino Yun上安装SDK，需要配置`--with-endian=big`。
+ 
