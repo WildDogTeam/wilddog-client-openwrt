@@ -36,7 +36,7 @@ extern "C"
 #define WD_DEBUG_ERROR  3
 #define WD_DEBUG_NODBG  4
 
-#ifdef WILDDOG_PORT_TYPE_ESP	
+#ifdef WILDDOG_PORT_TYPE_ESP    
 #include "wilddog_espressif.h"
 #define FAR ICACHE_FLASH_ATTR
 #define WD_SYSTEM FAR
@@ -76,7 +76,7 @@ typedef signed long s32 ;
 #endif
 
 #ifdef WILDDOG_DEBUG
-#define DEBUG_LEVEL WD_DEBUG_ALL
+#define DEBUG_LEVEL WD_DEBUG_ERROR
 
 #define wilddog_debug_level(level, format,...) do{if(level >= DEBUG_LEVEL){ \
     printf("func:%s LINE: %d: "format"\r\n", __func__, __LINE__, ##__VA_ARGS__); \
@@ -221,6 +221,7 @@ typedef void (*onPushFunc)
 typedef onSetFunc onRemoveFunc;
 typedef onSetFunc onAuthFunc;
 typedef onQueryFunc onEventFunc;
+typedef onSetFunc onDisConnectFunc;
 
 typedef size_t Wilddog_T;
 
