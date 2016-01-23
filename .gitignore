@@ -5,7 +5,7 @@
 *.ko
 *.obj
 *.elf
-
+*.Po
 # Dependency files
 *.d
 

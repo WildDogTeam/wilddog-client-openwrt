@@ -25,6 +25,7 @@ define Package/libwilddog
   SECTION:=libs
   CATEGORY:=Libraries
   TITLE:=CoAP UDP + DTLS + CBOR
+  DEPENDS:=+libpthread
 endef
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
