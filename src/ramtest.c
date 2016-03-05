@@ -22,13 +22,12 @@
 #include <malloc.h>
 #endif
 
-
 #include "wilddog.h"
 #include "wilddog_url_parser.h"
 #include "wilddog_api.h"
 #include "wilddog_ct.h"
 #include "test_lib.h"
-//#include "test_config.h"
+
 #ifdef WILDDOG_PORT_TYPE_ESP    
 #include "user_interface.h"
 #include "os_type.h"
@@ -313,11 +312,11 @@ int WD_SYSTEM ramtest_handle( const u8 *p_url,u32 tree_num, u8 request_num)
 {
     u8 m = 0;
     Wilddog_T wilddog = 0;
-	
+    
     ramtest_init(tree_num,request_num);
-	
+    
     wilddog = wilddog_initWithUrl((Wilddog_Str_T*)p_url);
-		
+        
     if(0 == wilddog)
     {
         return -1;
@@ -343,6 +342,4 @@ int WD_SYSTEM ramtest_handle( const u8 *p_url,u32 tree_num, u8 request_num)
 
 #endif
 
-
 #endif
-
