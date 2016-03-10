@@ -78,4 +78,4 @@
 例如，将`$(call Build/Configure/Default,--with-endian=big)`改为`$(call Build/Configure/Default,--with-sectype=nosec --with-endian=big)`后，重新`make V=s`，生成的ipk中，加密方式为未加密。
 
 注意，Arduino Yun(ar71xx系列)是大端模式，如果在 Arduino Yun 上安装 SDK，需要配置`--with-endian=big`。
- 
+
