@@ -39,7 +39,7 @@ define Package/demo
     SECTION:=utils
     CATEGORY:=Utilities
     TITLE:=demo -- prints a snarky message
-    DEPENDS:=+libstdcpp +libc +libwilddog
+    DEPENDS:=+libstdcpp +libc +libwilddog +libgcc_eh
 endef
 
 
