@@ -150,7 +150,8 @@ STATIC void addObserver_callback
     )
 {
     *(BOOL*)arg = TRUE;
-    if(err < WILDDOG_HTTP_OK || err >= WILDDOG_HTTP_NOT_MODIFIED)
+    if((err < WILDDOG_HTTP_OK || err >= WILDDOG_HTTP_NOT_MODIFIED ) &&
+        err != WILDDOG_ERR_RECONNECT)
     {
         wilddog_debug("addObserver failed!");
         return;
