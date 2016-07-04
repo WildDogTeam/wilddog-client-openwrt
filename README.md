@@ -49,7 +49,7 @@
 
 		opkg install demo_x_xxxx.ipk
 
-5. 使用 demo 获取数据:
+5. 使用 demo 获取数据，demo默认配置为大端，使用小端的设备可以参考下面的高级配置将参数改为小端:
 
 		demo getValue -l coap://<appId>.wilddogio.com/YourPath 
 
