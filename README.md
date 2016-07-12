@@ -41,7 +41,7 @@
 	
 		<M> demo............................ demo -- demo show how to use libwilddog 
 
-3. 编译：
+3. 编译，如果链接时有些API找不到，请在examples/demo目录下的Makefile中增加DEPEND libgcc_eh。：
 
 		make V=s
 
