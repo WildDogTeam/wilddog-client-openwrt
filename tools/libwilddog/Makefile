@@ -12,7 +12,7 @@ PKG_VERSION:=1.0.6
 PKG_RELEASE:=5
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://cdn.wilddog.com/sdk/c/
+PKG_SOURCE_URL:=https://cdn.wilddog.com/sdk/c/$(PKG_VERSION)/
 
 PKG_FIXUP:=autoreconf
 PKG_INSTALL:=1
