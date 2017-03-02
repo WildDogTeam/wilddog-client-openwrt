@@ -203,7 +203,7 @@ libwilddog_a_SOURCES+= \
 	./src/secure/tinydtls/tinydtls.h \
 	./src/secure/tinydtls/uthash.h \
 	./src/secure/tinydtls/utlist.h \
-	./src/secure/tinydtls/wilddog_conn_sec_dtls.c
+	./src/secure/tinydtls/wilddog_sec_tinydtls.c
 AM_CFLAGS+=-DWILDDOG_PORT=5684 -fno-strict-aliasing -pthread
 endif
 endif
