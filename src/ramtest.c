@@ -56,6 +56,8 @@ int ramtest_getSysRamusage(Ramtest_T *p,u32 *p_uage);
 void WD_SYSTEM ramtest_init(u32 tree_num,u32 request_num)
 {
     Ramtest_T *p = &d_ramtest;
+
+    wilddog_debug_level(WD_DEBUG_LOG,"Ram test start!");
     memset(p,0,sizeof(Ramtest_T));
     p->d_mallocblks_init = ramtest_getLastMallocSize(p);
     p->d_stackblks_init = ramtest_getLastStackSize(p);
@@ -152,7 +154,8 @@ void WD_SYSTEM ramtest_caculate_nodeRam(void)
     ramtest_getLastRamusage(&d_ramtest,&d_ramtest.d_node_ram);
 }
 void WD_SYSTEM ramtest_caculate_requestQueueRam(void)
-{    
+{
+    
     u32 quequeram =0;
     ramtest_getLastRamusage(&d_ramtest,&quequeram);
     d_ramtest.d_requestQeue_ram += quequeram;
@@ -341,5 +344,10 @@ int WD_SYSTEM ramtest_handle( const u8 *p_url,u32 tree_num, u8 request_num)
 }
 
 #endif
+#else
+void WD_SYSTEM ramtest_init(void)
+{
+    wilddog_debug_level(WD_DEBUG_LOG, "ram test cannot start, define WILDDOG_SELFTEST!");
+}
 
 #endif
