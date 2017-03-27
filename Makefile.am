@@ -15,16 +15,14 @@ libwilddog_a_SOURCES= \
 	./src/wilddog_ct.c \
 	./src/wilddog_ct.h \
 	./src/wilddog_debug.c \
-	./src/wilddog_conn_manage.c \
-	./src/wilddog_conn_manage.h \
 	./src/wilddog_endian.h \
 	./src/wilddog_event.c \
 	./src/wilddog_event.h \
 	./src/wilddog_node.c \
 	./src/wilddog_payload.h \
+	./src/wilddog_protocol.h \
 	./src/wilddog_sec.h \
 	./src/wilddog_sec_host.c \
-	./src/wilddog_sec_host.h \
 	./src/wilddog_store.c \
 	./src/wilddog_store.h \
 	./src/wilddog_url_parser.c \
@@ -34,8 +32,8 @@ libwilddog_a_SOURCES= \
 	./src/networking/coap/option.h \
 	./src/networking/coap/pdu.c \
 	./src/networking/coap/pdu.h \
-	./src/networking/coap/wilddog_conn_coap.c \
-	./src/networking/coap/wilddog_conn_coap.h \
+	./src/networking/coap/wilddog_protocol_coap.c \
+	./src/networking/coap/wilddog_protocol_coap.h \
 	./src/serialize/cbor/wilddog_cbor.c \
 	./src/serialize/cbor/wilddog_cbor.h \
 	./include/wilddog.h \
@@ -99,9 +97,9 @@ libwilddog_a_SOURCES += \
 	./src/secure/mbedtls/lib/ssl_srv.c \
 	./src/secure/mbedtls/lib/ssl_tls.c \
 	./src/secure/mbedtls/lib/timing.c \
-	./src/secure/mbedtls/lib/wilddog_dtls.c \
 	./src/secure/mbedtls/lib/x509.c \
 	./src/secure/mbedtls/lib/x509_crt.c \
+	./src/secure/mbedtls/lib/wilddog_sec_mbedtls.c \
 	./src/secure/mbedtls/inc/mbedtls/aes.h \
 	./src/secure/mbedtls/inc/mbedtls/aesni.h \
 	./src/secure/mbedtls/inc/mbedtls/arc4.h \
@@ -205,14 +203,7 @@ libwilddog_a_SOURCES+= \
 	./src/secure/tinydtls/tinydtls.h \
 	./src/secure/tinydtls/uthash.h \
 	./src/secure/tinydtls/utlist.h \
-	./src/secure/tinydtls/wilddog_conn_sec_dtls.c \
-	./src/serialize/cbor/wilddog_cbor.c \
-	./src/serialize/cbor/wilddog_cbor.h \
-	./include/wilddog.h \
-	./include/wilddog_api.h \
-	./include/wilddog_config.h \
-	./include/wilddog_debug.h \
-	./include/wilddog_port.h
+	./src/secure/tinydtls/wilddog_sec_tinydtls.c
 AM_CFLAGS+=-DWILDDOG_PORT=5684 -fno-strict-aliasing -pthread
 endif
 endif
