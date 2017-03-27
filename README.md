@@ -1,20 +1,20 @@
 
-####wilddog-client-openwrt说明：
+#### wilddog-client-openwrt说明：
 
 `wilddog-client-openwrt` 提供了一整套访问和操作野狗云端数据的 API，用户只需要在 OpenWRT 上安装，即可在应用中调用野狗提供的 API 访问野狗云端的数据.
 
-#####1. 下载
+##### 1. 下载
 
 从git下载到文件夹
 
 	git clone https://github.com/WildDogTeam/wilddog-client-openwrt.git
 
-#####2. 部署到 OpenWRT 项目中
+##### 2. 部署到 OpenWRT 项目中
 将`wilddog-client-openwrt/tools/libwilddog`文件夹拷贝到 OpenWRT 项目中的`package/libs/`目录下.
 
 	cp -rf wilddog-client-openwrt/tools/libwilddog  <your openwrt path>/package/libs/
 
-#####3. 在 OpenWRT 项目下制作 ipk 并安装
+##### 3. 在 OpenWRT 项目下制作 ipk 并安装
 
 1. 在 OpenWRT 项目的根目录下运行`make menuconfig`；
 
@@ -31,7 +31,7 @@
 		opkg install libwilddog_x.x.x-x_xxxx.ipk
 
 
-#####4. 范例使用
+##### 4. 范例使用
 
 1. 将`wilddog-client-openwrt/examples/demo`文件夹（以及其中的`Makefile`文件）拷贝到 OpenWRT 项目中的`package/utils/`目录下.
 
@@ -57,7 +57,7 @@
 
 6. 该 demo 展示了如何获取、更新、删除野狗云端数据，具体使用请阅读源码.
 		
-#####5. 高级配置
+##### 5. 高级配置
 
 可以在`wilddog-client-openwrt/tools/libwilddog`目录下的 Makefile 中对 SDK 进行配置。
 
