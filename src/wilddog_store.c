@@ -60,6 +60,30 @@ Wilddog_Store_T * WD_SYSTEM _wilddog_store_init(Wilddog_Repo_T* p_repo)
     p_store->p_se_callback = (Wilddog_Func_T)_wilddog_store_ioctl;
     return p_store;
 }
+/*
+ * Function:    _wilddog_store_clearAuth
+ * Description: Clear the auth data.
+ * Input:       p_store: The pointer of the store structure.
+ *              arg: args.
+ *              flag: unused.
+ * Output:      N/A
+ * Return:      If success return 0.
+*/
+STATIC Wilddog_Return_T WD_SYSTEM _wilddog_store_clearAuth
+    (
+    Wilddog_Store_T *p_store, 
+    void* arg, 
+    int flag
+    ){
+    Wilddog_Conn_T *p_conn = p_store->p_se_repo->p_rp_conn;
+
+    wilddog_assert(p_conn, WILDDOG_ERR_NULL);
+
+    memset(p_store->p_se_auth->p_auth, 0, WILDDOG_AUTH_LEN);
+    p_store->p_se_auth->d_len = 0;
+    
+    return WILDDOG_ERR_NOERR;
+}
 
 /*
  * Function:    _wilddog_store_setAuth
@@ -177,12 +201,19 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_store_ioctl
 {
     Wilddog_Conn_T *p_conn = p_store->p_se_repo->p_rp_conn;
     Wilddog_Event_T *p_rp_event = p_store->p_se_event;
+    if(!p_conn){
+        wilddog_debug("reinit connect layer");
+        p_store->p_se_repo->p_rp_conn = _wilddog_conn_init(p_store->p_se_repo);
+        p_conn = p_store->p_se_repo->p_rp_conn;
+    }
     switch(cmd)
     {
         case WILDDOG_STORE_CMD_GETAUTH:
             return _wilddog_store_getAuth(p_store, arg);
         case WILDDOG_STORE_CMD_GETNODE:
             return WILDDOG_ERR_INVALID;
+        case WILDDOG_STORE_CMD_CLEARAUTH:
+            return _wilddog_store_clearAuth(p_store, arg, flags);
         case WILDDOG_STORE_CMD_SETAUTH:
             return _wilddog_store_setAuth(p_store, arg, flags);
         case WILDDOG_STORE_CMD_SENDGET:

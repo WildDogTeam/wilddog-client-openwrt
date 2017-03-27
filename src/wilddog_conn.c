@@ -124,6 +124,7 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_conn_ping_callback
             break;
         }
         case WILDDOG_HTTP_UNAUTHORIZED:
+        case WILDDOG_HTTP_NOT_ACCEPTABLE:
         {
             //delta = 0,means it was stable, but now env changed.
             if(0 == p_conn->d_conn_sys.d_ping_delta){
@@ -782,6 +783,11 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_conn_auth_callback
             //change observe/rest stored packets' send time to now.
             LL_FOREACH_SAFE(p_conn->d_conn_user.p_observer_list,curr,tmp){
                 if(curr){
+                    if((WILDDOG_CONN_PKT_FLAG_NEVERTIMEOUT & curr->d_flag) == 0x1){
+                        //first observe response packet received before, 
+                        //now re auth, so need register again.
+                        curr->d_register_time = _wilddog_getTime();
+                    }
                     curr->d_flag &= ~WILDDOG_CONN_PKT_FLAG_NEVERTIMEOUT;
                     curr->d_count = 0;
                     curr->d_next_send_time = _wilddog_getTime();
@@ -819,6 +825,21 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_conn_auth_callback
             p_conn->d_session.d_session_status = WILDDOG_SESSION_NOTAUTHED;
             break;
         }
+#ifdef WILDDOG_AUTH_2_0
+        case WILDDOG_HTTP_UNAUTHORIZED:
+        {
+            wilddog_debug_level(WD_DEBUG_WARN, "Auth failed, clear auth data.");
+            p_conn->d_session.d_session_status = WILDDOG_SESSION_NOTAUTHED;
+
+            //clear user auth token
+            if(p_conn->p_conn_repo->p_rp_store->p_se_callback){
+                (p_conn->p_conn_repo->p_rp_store->p_se_callback)(
+                                      p_conn->p_conn_repo->p_rp_store,
+                                      WILDDOG_STORE_CMD_CLEARAUTH,NULL,0);
+            }
+            break;
+        }
+#endif
         default:
         {
             //WTF! We don't recognize this error code, can do nothing but reauth.
@@ -989,7 +1010,7 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_conn_retransmitPkt(Wilddog_Conn_T *p_
     command.protocol = p_conn->p_protocol;
     command.p_out_data = NULL;
     command.p_out_data_len = NULL;
-    command.p_proto_data = NULL;
+    command.p_proto_data = &(pkt->p_proto_data);
     //send pkt must need session info, exclude auth pkt.
     command.p_session_info = p_conn->d_session.short_sid;
     command.d_session_len = WILDDOG_CONN_SESSION_SHORT_LEN - 1;
@@ -1043,7 +1064,7 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_conn_pingHandler(Wilddog_Conn_T* p_co
 
     wilddog_assert(p_conn&&p_conn->p_protocol, WILDDOG_ERR_NULL);
     //already handled ping retransmit and timeout, now we handle send
-    if(WILDDOG_SESSION_AUTHED == p_conn->d_session.d_session_status){
+    if(WILDDOG_SESSION_AUTHED == p_conn->d_session.d_session_status && NULL == p_conn->d_conn_sys.p_ping){
         Wilddog_Proto_Cmd_Arg_T command;
         command.p_data = NULL;
         command.d_data_len = 0;
@@ -1062,11 +1083,11 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_conn_pingHandler(Wilddog_Conn_T* p_co
                 p_conn->d_conn_sys.d_ping_type = WILDDOG_PING_TYPE_SHORT;
             }
             //send to server
-            if(pkt){
+/*            if(pkt){
                 _wilddog_conn_packet_deInit(pkt);
                 wfree(pkt);
                 p_conn->d_conn_sys.p_ping = NULL;
-            }
+            }*/
             pkt = (Wilddog_Conn_Pkt_T*)wmalloc(sizeof(Wilddog_Conn_Pkt_T));
             wilddog_assert(pkt, WILDDOG_ERR_NULL);
             
@@ -1506,6 +1527,10 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_conn_sessionInit(Wilddog_Conn_T *p_co
 STATIC Wilddog_Return_T WD_SYSTEM _wilddog_conn_sessionRetry(Wilddog_Conn_T *p_conn){
     wilddog_assert(p_conn,WILDDOG_ERR_NULL);
 
+    if(NULL != p_conn->d_conn_sys.p_auth){
+        wilddog_debug_level(WD_DEBUG_WARN, "Session is establishing...");
+        return WILDDOG_ERR_NOERR;
+    }
     if(p_conn->d_conn_sys.d_offline_time != 0){
         //we are now offline, so we need control retry interval.
         u32 sended_time = (1 << p_conn->d_conn_sys.d_online_retry_count);

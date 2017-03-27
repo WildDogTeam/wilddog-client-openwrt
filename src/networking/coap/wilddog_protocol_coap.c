@@ -115,7 +115,7 @@ STATIC INLINE void WD_SYSTEM  _wilddog_coap_ntoh
 #if WILDDOG_LITTLE_ENDIAN == 1
     // lsb is from head
     for(i = 0; i < len; i++){
-        dst[i] = src[srcLen - i];
+        dst[i] = src[srcLen - i - 1];
     }
 #else
     //lsb is from tail
@@ -557,8 +557,8 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_coap_send_sendPkt(Wilddog_Coap_Sendpk
     if(TRUE == arg.isSend){
         ret = _wilddog_sec_send(arg.protocol, pdu->hdr, pdu->length);
         if(ret < 0){
-            coap_delete_pdu(pdu);
-            pdu = NULL;
+            //coap_delete_pdu(pdu);
+            //pdu = NULL;
             wilddog_debug_level(WD_DEBUG_ERROR, "Send Packet %x failed.",(unsigned int)token);
             ret = WILDDOG_ERR_SENDERR;
         }else{
@@ -583,8 +583,14 @@ END:
 STATIC Wilddog_Return_T WD_SYSTEM _wilddog_coap_initSession(void* data, int flag){
     Wilddog_Proto_Cmd_Arg_T * arg = (Wilddog_Proto_Cmd_Arg_T*)data;
     Wilddog_Return_T ret = WILDDOG_ERR_INVALID;
-    Wilddog_Str_T* tmp = NULL;
+    Wilddog_Str_T* tmp_path = NULL;
     Wilddog_Str_T* new_path = NULL;
+#ifdef WILDDOG_AUTH_2_0
+    Wilddog_Str_T* tmp_query = NULL;
+    Wilddog_Str_T* new_query = NULL;
+    int query_len = 0;
+#endif
+    
     int finalPathLen = 0;
     Wilddog_Coap_Sendpkt_Arg_T send_arg;
     //now we only care one packet, do not thinking about partition.
@@ -600,8 +606,32 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_coap_initSession(void* data, int flag
     }
     sprintf((char*)new_path, "%s", WILDDOG_COAP_SESSION_PATH);
     //store old path
-    tmp = arg->p_url->p_url_path;
+    tmp_path = arg->p_url->p_url_path;
     arg->p_url->p_url_path = new_path;
+
+#ifdef WILDDOG_AUTH_2_0
+    //auth 2.0, url is like coap://1.wilddogio.com/.cs?v=2
+    if(NULL != arg->p_url->p_url_query){
+        //query string length  = (pkt.url->p_url_query) + (&) + (v=2) + '\0'
+        query_len = strlen((const char*)arg->p_url->p_url_query) + 1 + strlen(WILDDOG_COAP_SESSION_AUTH_QUERY_2_0) + 1;
+    }else{
+        //query string length  = (v=2) + '\0'
+        query_len = strlen(WILDDOG_COAP_SESSION_AUTH_QUERY_2_0) + 1;
+    }
+    new_query = (Wilddog_Str_T*)wmalloc(query_len);
+    if(NULL == new_query){
+        wfree(new_path);
+        return WILDDOG_ERR_NULL;
+    }
+    if(NULL != arg->p_url->p_url_query){
+        sprintf((char*)new_query, "%s&%s",(const char*)arg->p_url->p_url_query,WILDDOG_COAP_SESSION_AUTH_QUERY_2_0);
+    }else{
+        sprintf((char*)new_query, "%s",WILDDOG_COAP_SESSION_AUTH_QUERY_2_0);
+    }
+    //store old query
+    tmp_query = arg->p_url->p_url_query;
+    arg->p_url->p_url_query = new_query;
+#endif
     
     send_arg.protocol = arg->protocol;
     send_arg.url = arg->p_url;
@@ -616,10 +646,15 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_coap_initSession(void* data, int flag
 
     ret = _wilddog_coap_send_sendPkt(send_arg, FALSE, WILDDOG_COAP_OBSERVE_NOOBSERVE);
     //resume old path
-    arg->p_url->p_url_path = tmp;
+    arg->p_url->p_url_path = tmp_path;
     if(new_path)
         wfree(new_path);
-    
+#ifdef WILDDOG_AUTH_2_0
+    //resume old query
+    arg->p_url->p_url_query = tmp_query;
+    if(new_query)
+        wfree(new_query);
+#endif
 
     return ret;
 }
@@ -740,8 +775,8 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_coap_send_retransmit(void* data, int 
             }
         }
         //observe special operation
-        if(arg->p_proto_data){
-            _Wilddog_Coap_Observe_Data_T * observe_data = (_Wilddog_Coap_Observe_Data_T*)arg->p_proto_data;
+        if(arg->p_proto_data && *(arg->p_proto_data)){
+            _Wilddog_Coap_Observe_Data_T * observe_data = *(_Wilddog_Coap_Observe_Data_T**)arg->p_proto_data;
             observe_data->last_index = 0;
             observe_data->last_recv_time = 0;
             observe_data->maxage = 0;
@@ -1228,6 +1263,7 @@ STATIC Wilddog_Return_T WD_SYSTEM _wilddog_coap_recv_handlePkt(void* data, int f
             observe_data->last_recv_time = _wilddog_getTime();
         }else{
             //get old observe, ignore it.
+            wilddog_debug_level(WD_DEBUG_WARN,"Received old observe index: last index is %ld, current index is %ld",observe_data->last_index,observe_index);
             error_code = WILDDOG_ERR_IGNORE;
         }
     }
@@ -1392,7 +1428,6 @@ Wilddog_Protocol_T * WD_SYSTEM _wilddog_protocol_init(void *data)
     protocol->host = p_conn->p_conn_repo->p_rp_url->p_url_host;
     protocol->addr.port = WILDDOG_PORT;
     protocol->callback = _wilddog_protocol_ioctl;
-
     //init socket and ip
     if(WILDDOG_ERR_NOERR != _wilddog_sec_init(protocol)){
         wfree(protocol);
